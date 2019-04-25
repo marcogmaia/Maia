@@ -3,21 +3,20 @@
 
 #include <SFML/Graphics.hpp>
 #include <map>
-#include <vector>
 
-enum direction_t { down = 0, left, right, up };
+enum direction_t { DOWN = 0, LEFT, RIGHT, UP };
 
 class Player {
 private:
     sf::Texture m_texture;
-    std::map<direction_t, AnimatedSprite> m_mapAnimatedSprite;
+    std::map<direction_t, Animation> m_mapAnimation;
+    direction_t m_facingDirection;
 
 public:
-    sf::Sprite sprite;
+    // sf::Sprite sprite;
+    AnimatedSprite animSprite;
     sf::Vector2f position;
     Player();
     ~Player();
-    void setSprite();
-    void setTexture();
-    void walk(direction_t direction);
+    void walk();
 };

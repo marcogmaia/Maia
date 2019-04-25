@@ -7,34 +7,32 @@
 
 #define WINDOW_NAME "Maia"
 
-void moveWASD(sf::Transformable &shape) {
-    float velocity = 1;
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-        shape.move(0.0, -velocity);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-        shape.move(-velocity, 0.0);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-        shape.move(0.0, velocity);
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-        shape.move(velocity, 0.0);
-    }
-}
+// void moveWASD(sf::Transformable &shape) {
+//     float velocity = 1;
+//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+//         shape.move(0.0, -velocity);
+//     }
+//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+//         shape.move(-velocity, 0.0);
+//     }
+//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+//         shape.move(0.0, velocity);
+//     }
+//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+//         shape.move(velocity, 0.0);
+//     }
+// }
 
 void threadRender() {
     sf::RenderWindow window(sf::VideoMode(600, 600), WINDOW_NAME,
         sf::Style::Close | sf::Style::Default);
     window.setFramerateLimit(220);
 
-    Player Player;
-    Player.setTexture();
-    Player.setSprite();
-
+    Player player;
     sf::Clock clock;
-    clock.getElapsedTime();
+
     while(window.isOpen()) {
+        sf::Time frameTime = clock.restart();
         sf::Event event;
         sf::FloatRect visibleArea;
         while(window.pollEvent(event)) {
@@ -56,10 +54,13 @@ void threadRender() {
                 break;
             }
         }
-        moveWASD(Player.sprite);
+
+        player.walk();
+        player.animSprite.update(frameTime);
+
 
         window.clear();
-        window.draw(Player.sprite);
+        window.draw(player.animSprite);
         window.display();
     }
 }

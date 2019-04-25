@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
 project("Maia")
+set(Maia_VERSION_MAJOR 0)
+set(Maia_VERSION_MINOR 0)
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 find_package(Python3 3.7 COMPONENTS Interpreter Development REQUIRED)
@@ -28,4 +30,13 @@ add_executable(
 
 target_link_libraries(${PROJECT_NAME} sfml-graphics pthread "${PYTHON_LIBRARIES}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++14 -Wall")
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -DNDEBUG")
+
+# set(CMAKE_BUILD_TYPE RELEASE)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RELEASE)
+    message("CMAKE_BUILD_TYPE set to ${CMAKE_BUILD_TYPE}")
+endif()

@@ -24,6 +24,7 @@
 
 #include "AnimatedSprite.hpp"
 
+#include <iostream>
 AnimatedSprite::AnimatedSprite(sf::Time frameTime, bool paused, bool looped)
     : m_animation(NULL), m_frameTime(frameTime), m_currentFrame(0),
       m_isPaused(paused), m_isLooped(looped), m_texture(NULL) {}
@@ -102,6 +103,7 @@ sf::Time AnimatedSprite::getFrameTime() const {
 
 void AnimatedSprite::setFrame(std::size_t newFrame, bool resetTime) {
     if(m_animation) {
+        fprintf(stderr, "setFrame: %lu\n", newFrame);
         // calculate new vertex positions and texture coordiantes
         sf::IntRect rect = m_animation->getFrame(newFrame);
 
@@ -124,8 +126,9 @@ void AnimatedSprite::setFrame(std::size_t newFrame, bool resetTime) {
         m_vertices[3].texCoords = sf::Vector2f(right, top);
     }
 
-    if(resetTime)
+    if(resetTime) {
         m_currentTime = sf::Time::Zero;
+    }
 }
 
 void AnimatedSprite::update(sf::Time deltaTime) {
@@ -141,8 +144,9 @@ void AnimatedSprite::update(sf::Time deltaTime) {
                 m_currentTime.asMicroseconds() % m_frameTime.asMicroseconds());
 
             // get next Frame index
-            if(m_currentFrame + 1 < m_animation->getSize())
-                m_currentFrame++;
+            if(m_currentFrame + 1 < m_animation->getSize()) {
+                ++m_currentFrame;
+            }
             else {
                 // animation has ended
                 m_currentFrame = 0;  // reset to start
