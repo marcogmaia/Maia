@@ -1,4 +1,5 @@
 add_library(main STATIC AnimatedSprite.cpp Animation.cpp Player.cpp)
+target_link_libraries(main fmt thor)
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 

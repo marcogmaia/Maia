@@ -8,6 +8,7 @@ find_package(PythonLibs 3.7 REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(lib/Thor)
+add_subdirectory(lib/fmt)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 # ${PROJECT_SOURCE_DIR}/assets
@@ -26,5 +27,5 @@ set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -O0 -Wall -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -DNDEBUG")
 
 set(CMAKE_BUILD_TYPE RELEASE)
-message("CMAKE_BUILD_TYPE set to
-${CMAKE_BUILD_TYPE}")
+message("CMAKE_BUILD_TYPE set to ${CMAKE_BUILD_TYPE}")
+
