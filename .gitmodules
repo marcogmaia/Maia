@@ -1,0 +1,6 @@
+[submodule "lib/Thor"]
+	path = lib/Thor
+	url = https://github.com/Bromeon/Thor
+[submodule "lib/fmt"]
+	path = lib/fmt
+	url = https://github.com/fmtlib/fmt
