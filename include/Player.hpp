@@ -10,7 +10,8 @@ class Player {
 private:
     sf::Texture m_texture;
     std::map<direction_t, Animation> m_mapAnimation;
-    direction_t m_facingDirection;
+    // direction_t m_facingDirection;
+    static Player *m_globalPtr;
 
 public:
     // sf::Sprite sprite;
@@ -19,4 +20,5 @@ public:
     Player();
     ~Player();
     void walk();
+    static Player *getInstance();
 };

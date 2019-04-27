@@ -103,7 +103,9 @@ sf::Time AnimatedSprite::getFrameTime() const {
 
 void AnimatedSprite::setFrame(std::size_t newFrame, bool resetTime) {
     if(m_animation) {
+#if defined(DEBUG)
         fprintf(stderr, "setFrame: %lu\n", newFrame);
+#endif  // DEBUG
         // calculate new vertex positions and texture coordiantes
         sf::IntRect rect = m_animation->getFrame(newFrame);
 

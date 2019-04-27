@@ -1,11 +1,13 @@
 #include "Player.hpp"
 
+#include <iostream>
 
 #define ASSETS_PATH                                                            \
     "/home/marco/dev/cpp/games/maia/assets/Commissions/Paladin32x.png"
 #define SPRITE_WIDTH 32
 #define SPRITE_HEIGHT 32
 
+Player *Player::m_globalPtr = nullptr;
 
 Player::Player() {
     animSprite = AnimatedSprite();
@@ -43,9 +45,15 @@ Player::Player() {
      * we can can use AnimatedSprite
      * this class only takes care of the animations
      */
+    animSprite.setOrigin(SPRITE_WIDTH / 2, SPRITE_HEIGHT / 2);
+    animSprite.play(m_mapAnimation[DOWN]);
+    m_globalPtr = this;
 }
 
-Player::~Player() {}
+Player::~Player() {
+    delete m_globalPtr;
+    m_globalPtr = nullptr;
+}
 
 void Player::walk() {
     float velocity = 1.f;
@@ -53,42 +61,46 @@ void Player::walk() {
     direction_t direction = UP;
     sf::Vector2f movement(0.f, 0.f);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-        direction = UP;
         movement.y -= velocity;
         moved = true;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-        direction = LEFT;
-        movement.x -= velocity;
-        moved = true;
-    }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-        direction = DOWN;
         movement.y += velocity;
         moved = true;
     }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+        movement.x -= velocity;
+        moved = true;
+    }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-        direction = RIGHT;
         movement.x += velocity;
         moved = true;
     }
+
+    if(movement.x > 0)
+        direction = RIGHT;
+    else if(movement.x < 0)
+        direction = LEFT;
+    else if(movement.y > 0)
+        direction = DOWN;
+    else if(movement.y < 0)
+        direction = UP;
+    else
+        moved = false;
+
     if(moved) {
-        if(!animSprite.isPlaying()) {
-            animSprite.setAnimation(m_mapAnimation[direction]);
-            animSprite.play();
-        }
+        animSprite.play(m_mapAnimation[direction]);
         animSprite.move(movement);
         moved = false;
     }
     else if(animSprite.isPlaying()) {
         animSprite.stop();
     }
+}
 
-    // else if(moved) {
-    //     animSprite.move(movement);
-    // }
-    // else {
-    //     moved = false;
-    //     animSprite.stop();
-    // }
+Player *Player::getInstance() {
+    if(m_globalPtr == nullptr) {
+        m_globalPtr = new Player();
+    }
+    return m_globalPtr;
 }
