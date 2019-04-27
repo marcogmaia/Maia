@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <fmt/format.h>
 #include <mutex>
 #include <thread>
 
@@ -38,12 +39,12 @@ void threadRender(sf::RenderWindow *window) {
 
     Player *ptrplayer = Player::getInstance();
     ptrplayer->animSprite.setPosition(pos / 2.f);
-    sf::Clock clock;
+    sf::Clock frameClock;
 
     while(window->isOpen()) {
         gamePollEvents(window);
 
-        sf::Time frameTime = clock.restart();
+        sf::Time frameTime = frameClock.restart();
         ptrplayer->walk();
         ptrplayer->animSprite.update(frameTime);
 
