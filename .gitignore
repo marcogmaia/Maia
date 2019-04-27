@@ -2,3 +2,4 @@ build/
 arch.gv
 model
 assets/test/char.png
+.vscode
