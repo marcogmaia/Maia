@@ -4,3 +4,6 @@
 [submodule "lib/fmt"]
 	path = lib/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "lib/tmxlite"]
+	path = lib/tmxlite
+	url = https://github.com/fallahn/tmxlite
