@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include "Thor/Vectors.hpp"
+
 #include <iostream>
 
 #define ASSETS_PATH                                                            \
@@ -90,6 +92,8 @@ void Player::walk() {
 
     if(moved) {
         animSprite.play(m_mapAnimation[direction]);
+        movement = thor::unitVector(movement);
+        // Vector2Math::normalize(movement);
         animSprite.move(movement);
         moved = false;
     }
