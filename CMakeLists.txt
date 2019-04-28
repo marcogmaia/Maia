@@ -9,18 +9,18 @@ find_package(PythonLibs 3.7 REQUIRED)
 add_subdirectory(src)
 add_subdirectory(lib/Thor)
 add_subdirectory(lib/fmt)
+add_subdirectory(lib/tmxlite/tmxlite)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-# ${PROJECT_SOURCE_DIR}/assets
+include_directories("${PROJECT_SOURCE_DIR}/include"
+                    "${PROJECT_SOURCE_DIR}/lib/fmt/include")
 
 add_executable(${PROJECT_NAME} "${PROJECT_SOURCE_DIR}/src/main.cpp")
 
-target_link_libraries(${PROJECT_NAME}
-                      sfml-graphics
-                      pthread
-                      thor
-                      "${PYTHON_LIBRARIES}"
-                      main)
+target_link_libraries(${PROJECT_NAME} sfml-graphics pthread
+                      # "${PYTHON_LIBRARIES}"
+                      player fmt
+                      # tmxlite
+                      )
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -O0 -Wall -g")
@@ -28,4 +28,3 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -DNDEBUG")
 
 set(CMAKE_BUILD_TYPE RELEASE)
 message("CMAKE_BUILD_TYPE set to ${CMAKE_BUILD_TYPE}")
-

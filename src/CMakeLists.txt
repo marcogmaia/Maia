@@ -1,7 +1,11 @@
-add_library(main STATIC AnimatedSprite.cpp Animation.cpp Player.cpp)
-target_link_libraries(main fmt thor)
+add_library(player STATIC AnimatedSprite.cpp Animation.cpp Player.cpp)
+target_link_libraries(player thor)
 
-include_directories("${PROJECT_SOURCE_DIR}/include")
+# include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories("${PROJECT_SOURCE_DIR}/include"
+                    "${PROJECT_SOURCE_DIR}/lib/Thor/include"
+                    "${PROJECT_SOURCE_DIR}/lib/Thor/extlibs/aurora/include"
+                    )
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -O0 -Wall -g")
