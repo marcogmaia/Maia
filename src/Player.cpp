@@ -2,14 +2,13 @@
 
 #include "Thor/Vectors.hpp"
 
+#include <fmt/format.h>
 #include <iostream>
 
 #define ASSETS_PATH                                                            \
     "/home/marco/dev/cpp/games/maia/assets/Commissions/Paladin32x.png"
 #define SPRITE_WIDTH 32
 #define SPRITE_HEIGHT 32
-
-Player *Player::m_globalPtr = nullptr;
 
 Player::Player() {
     animSprite = AnimatedSprite();
@@ -49,13 +48,9 @@ Player::Player() {
      */
     animSprite.setOrigin(SPRITE_WIDTH / 2, SPRITE_HEIGHT / 2);
     animSprite.play(m_mapAnimation[DOWN]);
-    m_globalPtr = this;
 }
 
-Player::~Player() {
-    delete m_globalPtr;
-    m_globalPtr = nullptr;
-}
+Player::~Player() {}
 
 void Player::walk() {
     float velocity = 1.f;
@@ -103,8 +98,6 @@ void Player::walk() {
 }
 
 Player *Player::getInstance() {
-    if(m_globalPtr == nullptr) {
-        m_globalPtr = new Player();
-    }
-    return m_globalPtr;
+    static Player p;
+    return &p;
 }

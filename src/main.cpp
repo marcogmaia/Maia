@@ -37,19 +37,20 @@ void threadRender(sf::RenderWindow *window) {
     window->setFramerateLimit(220);
     sf::Vector2f pos = sf::Vector2f(window->getSize());
 
-    Player *ptrplayer = Player::getInstance();
-    ptrplayer->animSprite.setPosition(pos / 2.f);
+    Player *player = Player::getInstance();
+    player->animSprite.setPosition(pos / 2.f);
+
     sf::Clock frameClock;
 
     while(window->isOpen()) {
         gamePollEvents(window);
 
         sf::Time frameTime = frameClock.restart();
-        ptrplayer->walk();
-        ptrplayer->animSprite.update(frameTime);
+        player->walk();
+        player->animSprite.update(frameTime);
 
         window->clear();
-        window->draw(ptrplayer->animSprite);
+        window->draw(player->animSprite);
         window->display();
     }
 }
