@@ -1,47 +1,77 @@
-////////////////////////////////////////////////////////////
-//
-// Copyright (C) 2014 Maximilian Wagenbach (aka. Foaly) (foaly.f@web.de)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from the
-// use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented;
-// you must not claim that you wrote the original software.
-// If you use this software in a product, an acknowledgment
-// in the product documentation would be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such,
-// and must not be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source distribution.
-//
-////////////////////////////////////////////////////////////
+#include <Animation.hpp>
+#include <Thor/Animations.hpp>
+#include <Thor/Vectors.hpp>
 
-#include "Animation.hpp"
+static const int sprite_width  = 32;
+static const int sprite_height = 32;
 
-Animation::Animation() : m_texture(NULL) {}
+#define TEXTURE_PATH                                                           \
+    "/home/marco/dev/cpp/games/maia/assets/Commissions/Paladin32x.png"
 
-void Animation::addFrame(sf::IntRect rect) {
-    m_frames.push_back(rect);
+
+void Animation::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(m_sprite, states);
 }
 
-void Animation::setSpriteSheet(const sf::Texture &texture) {
-    m_texture = &texture;
+Animation::Animation(sf::Sprite &sprite)
+    : m_sprite(sprite)
+    , m_pFrameBuffer(nullptr) {
+    // m_image.loadFromFile(TEXTURE_PATH);
+    // m_texutere.loadFromImage(m_image);
+    // m_sprite.setTexture(m_texutere);
+    m_sprite.setPosition(100, 100);
+};
+
+/**
+ * @brief Adds a range of frames, assuming they are aligned as rectangles
+ * in the texture
+ *
+ * @param animation Frame animation to modify
+ * @param [xFirst, xLast]: bounds for columns indices
+ * (if xLast < xFirst, add frames in reverse order)
+ * @param y index of the texture rectangle
+ * @param duration Relative duration of current frame (1 default)
+ * */
+void Animation::addFrames(int xFirst, int xLast, int y, float duration) {
+    const int step = (xFirst < xLast) ? 1 : -1;
+    xLast += step;
+
+    // thor::FrameAnimation frames;
+    if(m_pFrameBuffer == nullptr) {
+        m_pFrameBuffer = new thor::FrameAnimation();
+    }
+
+    for(int x = xFirst; x != xLast; x += step) {
+        sf::IntRect rect(
+            sprite_width * x, sprite_height * y, sprite_width, sprite_height);
+        fmt::print("Rect: p({:>2}, {:>2}), size: s({:>2}, {:>2})\n", rect.left,
+            rect.top, rect.width, rect.height);
+        m_pFrameBuffer->addFrame(duration, rect);
+    }
 }
 
-const sf::Texture *Animation::getSpriteSheet() const {
-    return m_texture;
+void Animation::addToAnimator(enum_animId_t id, float duration) {
+    animator.addAnimation(id, *m_pFrameBuffer, sf::seconds(duration));
+    delete m_pFrameBuffer;
+    m_pFrameBuffer = nullptr;
 }
 
-std::size_t Animation::getSize() const {
-    return m_frames.size();
+void Animation::playAnimation(enum_animId_t id, bool restart) {
+    if(restart || !animator.isPlayingAnimation()) {
+        animator.playAnimation(id);
+    }
 }
 
-const sf::IntRect &Animation::getFrame(std::size_t n) const {
-    return m_frames[n];
+void Animation::animate() {
+    animator.update(m_frameClock.restart());
+    animator.animate(m_sprite);
+}
+
+bool Animation::isPlaying() {
+    return animator.isPlayingAnimation();
+}
+
+void Animation::stop() {
+    // animator.playAnimation(IDLE);
+    animator.stopAnimation();
 }

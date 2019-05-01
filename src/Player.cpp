@@ -10,52 +10,35 @@
 #define SPRITE_WIDTH 32
 #define SPRITE_HEIGHT 32
 
-Player::Player() {
-    animSprite = AnimatedSprite();
-    m_mapAnimation[DOWN] = Animation();
-    m_mapAnimation[LEFT] = Animation();
-    m_mapAnimation[RIGHT] = Animation();
-    m_mapAnimation[UP] = Animation();
+void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(m_animation, states);
+}
 
+Player::Player()
+    : m_animation(m_sprite) {
     m_texture.loadFromFile(ASSETS_PATH);
-    /**
-     * AnimatedSprite only takes care of the animation
-     * of the Animation class
-     *
-     * We need a animation for each of the player animation
-     * */
-    for(auto &&i : m_mapAnimation) {
-        i.second.setSpriteSheet(m_texture);
-    }
-    auto setFrames = [](Animation &anim, sf::Vector2i initialPos) {
-        sf::IntRect rect;
-        for(int i = 0; i < 4; ++i) {
-            rect.left = initialPos.x + i * SPRITE_WIDTH;
-            rect.top = initialPos.y;
-            rect.width = SPRITE_WIDTH;
-            rect.height = SPRITE_HEIGHT;
-            anim.addFrame(rect);
-        }
-    };
-    setFrames(m_mapAnimation[DOWN], sf::Vector2i(0, 0));
-    setFrames(m_mapAnimation[LEFT], sf::Vector2i(0, SPRITE_HEIGHT * 1));
-    setFrames(m_mapAnimation[RIGHT], sf::Vector2i(0, SPRITE_HEIGHT * 2));
-    setFrames(m_mapAnimation[UP], sf::Vector2i(0, SPRITE_HEIGHT * 3));
-    /**
-     * once with all the animations set up
-     * we can can use AnimatedSprite
-     * this class only takes care of the animations
-     */
-    animSprite.setOrigin(SPRITE_WIDTH / 2, SPRITE_HEIGHT / 2);
-    animSprite.play(m_mapAnimation[DOWN]);
+    m_sprite.setTexture(m_texture);
+
+    m_animation.addFrames(0, 3, 0);
+    m_animation.addToAnimator(DOWN, 1.f);
+    m_animation.addFrames(0, 3, 1);
+    m_animation.addToAnimator(LEFT, 1.f);
+    m_animation.addFrames(0, 3, 2);
+    m_animation.addToAnimator(RIGHT, 1.f);
+    m_animation.addFrames(0, 3, 3);
+    m_animation.addToAnimator(UP, 1.f);
+    m_animation.playAnimation(DOWN);
+    m_animation.animate();
 }
 
 Player::~Player() {}
 
 void Player::walk() {
-    float velocity = 1.f;
+    float velocity    = 2.f;
     static bool moved = false;
-    direction_t direction = UP;
+    // direction_t direction = UP;
+    static enum_animId_t direction     = DOWN;
+    static enum_animId_t old_direction = direction;
     sf::Vector2f movement(0.f, 0.f);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
         movement.y -= velocity;
@@ -86,15 +69,37 @@ void Player::walk() {
         moved = false;
 
     if(moved) {
-        animSprite.play(m_mapAnimation[direction]);
+    }
+
+    auto checkChangedDirection = [&]() -> bool {
+        bool restart = false;
+        if(direction != old_direction) {
+            old_direction = direction;
+            restart       = true;
+        }
+        return restart;
+    };
+
+    if(moved) {
+        m_animation.playAnimation(direction, checkChangedDirection());
         movement = thor::unitVector(movement);
-        // Vector2Math::normalize(movement);
-        animSprite.move(movement);
+        m_sprite.move(movement);
         moved = false;
     }
-    else if(animSprite.isPlaying()) {
-        animSprite.stop();
+    else if(m_animation.isPlaying()) {
+        m_animation.stop();
+        /**
+         * adicionar uma idle animation pra cada direção
+         * std::map<enum_animId, enum_animId> idle;
+         * idle[UP] = IDLE_UP;
+         * ... etc
+         * m_animation.playAnimation(idle[direction]);
+         * */
     }
+}
+
+void Player::updateAnimation() {
+    m_animation.animate();
 }
 
 Player *Player::getInstance() {

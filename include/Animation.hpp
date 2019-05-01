@@ -1,47 +1,40 @@
-////////////////////////////////////////////////////////////
-//
-// Copyright (C) 2014 Maximilian Wagenbach (aka. Foaly) (foaly.f@web.de)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from the
-// use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented;
-// you must not claim that you wrote the original software.
-// If you use this software in a product, an acknowledgment
-// in the product documentation would be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such,
-// and must not be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source distribution.
-//
-////////////////////////////////////////////////////////////
+#pragma once
 
-#ifndef ANIMATION_INCLUDE
-#define ANIMATION_INCLUDE
-
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics.hpp>
+#include <Thor/Animations.hpp>
+#include <fmt/format.h>
+#include <map>
 #include <vector>
 
-class Animation {
+enum enum_animId_t { IDLE, UP, DOWN, LEFT, RIGHT };
+
+class Animation : public sf::Drawable {
 private:
-    const sf::Texture *m_texture;
-    std::vector<sf::IntRect> m_frames;
+    // sf::Image m_image;
+    // sf::Texture m_texutere;
+    sf::Sprite &m_sprite;
+
+    sf::Clock m_frameClock;
+
+    thor::FrameAnimation *m_pFrameBuffer;
+
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
-    Animation();
-
-    void addFrame(sf::IntRect rect);
-    void setSpriteSheet(const sf::Texture &texture);
-    const sf::Texture *getSpriteSheet() const;
-    std::size_t getSize() const;
-    const sf::IntRect &getFrame(std::size_t n) const;
-};
-
-#endif  // ANIMATION_INCLUDE
+    thor::Animator<sf::Sprite, enum_animId_t> animator;
+    /**
+     * adds frame sequence to the animation map
+     * */
+    Animation(sf::Sprite &sprite);
+    void addFrames(int xFirst, int xLast, int y, float duration = 1.f);
+    /**
+     * add the sequence of frames to the animator
+     * then remove the m_pFrameBuffer allocated memory
+     * */
+    void addToAnimator(enum_animId_t id, float duration = 0.2f);
+    void playAnimation(enum_animId_t id, bool restart = false);
+    void animate();
+    bool isPlaying();
+    void stop();
+    // void play(animation_enum_t id);
+};  // Animation

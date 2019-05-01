@@ -1,23 +1,24 @@
 #pragma once
-#include "AnimatedSprite.hpp"
-
+// #include "AnimatedSprite.hpp"
+#include <Animation.hpp>
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <memory>
 
-enum direction_t { DOWN = 0, LEFT, RIGHT, UP };
-
-class Player final {
+class Player : public sf::Drawable {
 private:
     sf::Texture m_texture;
-    std::map<direction_t, Animation> m_mapAnimation;
+    sf::Sprite m_sprite;
+    Animation m_animation;
+
     Player();
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 public:
-    AnimatedSprite animSprite;
     sf::Vector2f position;
     Player &operator=(const Player &) = delete;
     ~Player();
     void walk();
+    void updateAnimation();
     static Player *getInstance();
 };

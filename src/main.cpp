@@ -1,5 +1,5 @@
 #include "Player.hpp"
-
+#include <Animation.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <fmt/format.h>
@@ -7,6 +7,24 @@
 #include <thread>
 
 #define WINDOW_NAME "Maia"
+
+static const int sprite_width  = 32;
+static const int sprite_height = 32;
+
+void addFrames(thor::FrameAnimation &animation, int y, int xFirst, int xLast,
+    float duration = 1.f) {
+    const int step = (xFirst < xLast) ? 1 : -1;
+    xLast += step;
+
+    thor::FrameAnimation frames;
+    for(int x = xFirst; x != xLast; x += step) {
+        sf::IntRect rect(
+            sprite_width * x, sprite_height * y, sprite_width, sprite_height);
+        fmt::print("Rect: p({:>2}, {:>2}), size: s({:>2}, {:>2})\n", rect.left,
+            rect.top, rect.width, rect.height);
+        frames.addFrame(duration, rect);
+    }
+}
 
 void gamePollEvents(sf::RenderWindow *window) {
     sf::Event event;
@@ -34,23 +52,29 @@ void gamePollEvents(sf::RenderWindow *window) {
 
 void threadRender(sf::RenderWindow *window) {
     window->setActive();
+    window->setVerticalSyncEnabled(true);
     window->setFramerateLimit(220);
-    sf::Vector2f pos = sf::Vector2f(window->getSize());
+
+
+    // Animation animation;
+    // animation.addFrames(0, 3, 0);
+    // animation.addToAnimator(UP, 2);
+    // animation.playAnimation(UP);
 
     Player *player = Player::getInstance();
-    player->animSprite.setPosition(pos / 2.f);
 
-    sf::Clock frameClock;
-
+    sf::Clock frameTime;
     while(window->isOpen()) {
         gamePollEvents(window);
 
-        sf::Time frameTime = frameClock.restart();
+        // animator.update(frameTime.restart());
+        // animator.animate(sprite);
+        // animation.animate();
         player->walk();
-        player->animSprite.update(frameTime);
+        player->updateAnimation();
 
-        window->clear();
-        window->draw(player->animSprite);
+        window->clear(sf::Color(50, 50, 50));
+        window->draw(*player);
         window->display();
     }
 }
