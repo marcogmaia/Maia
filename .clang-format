@@ -1,0 +1,43 @@
+Language: Cpp
+Standard: Cpp11
+BasedOnStyle: LLVM
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterEnum: false
+    AfterStruct: false
+    AfterControlStatement: false
+    AfterExternBlock: false
+    BeforeElse: true
+    SplitEmptyFunction: false
+BreakBeforeBinaryOperators: All
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeComma
+PointerAlignment: Right
+# PointerBindsToType: false
+TabWidth: 4
+IndentWidth: 4
+SortIncludes: true
+AccessModifierOffset: -4
+ColumnLimit: 80
+NamespaceIndentation: All
+AlignAfterOpenBracket: DontAlign
+AlignTrailingComments: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+AllowAllParametersOfDeclarationOnNextLine: true
+AlwaysBreakTemplateDeclarations: true
+UseTab: Never
+
+AllowShortFunctionsOnASingleLine: Empty
+
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: Never
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+
+IncludeBlocks: Regroup
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 2
+
+
