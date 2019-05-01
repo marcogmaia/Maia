@@ -4,3 +4,6 @@ model
 assets/test/char.png
 .vscode
 *.aseprite
+assets/
+CMakeCache.txt
+CMakeFiles
